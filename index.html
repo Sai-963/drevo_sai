@@ -276,8 +276,19 @@
 <body>
 
     <header>
-        <img src="base.jpg" alt="Логотип Древа Sai" class="logo">
-        <h1>ДРЕВО SAI</h1>
+        <!-- Общая коробка для логотипа и выглядывающего Сая -->
+        <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px;">
+            
+            <!-- Ваш круглый логотип фракции -->
+            <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: relative; z-index: 2; margin-bottom: 0;">
+            
+            <!-- Маленький Сай, который прячется ЗА логотипом и вылезает СПРАВА -->
+            <div id="saiCharacter" style="position: absolute; top: 5px; left: 40px; z-index: 1; width: 120px; height: 120px; pointer-events: none;">
+                <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>
+            </div>
+            
+        </div>
+        <h1>DREVO SAI</h1>
         <p>Разные судьбы у наших ветвей, но вместе у ствола мы только сильней.</p>
     </header>
 
