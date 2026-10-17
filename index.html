@@ -272,27 +272,111 @@
             <h2>Вступление в организацию</h2>
             <p style="margin-bottom: 20px;">Нам нужны лучшие: строители масштабных ферм, PvP-бойцы, редстоунеры и опытные шпионы. Заполните анкету ниже. Если вы нам подойдете, с вами свяжутся.</p>
             
-            <form action="ССЫЛКА_НА_FORMSPREE" method="POST">
+            <form id="applicationForm">
                 <div class="form-group">
                     <label for="nickname">Игровой никнейм</label>
-                    <input type="text" id="nickname" name="nickname" required placeholder="Например, Player123">
+                    <input type="text" id="nickname" required placeholder="Например, Player123">
                 </div>
                 
                 <div class="form-group">
                     <label for="discord">Discord для связи</label>
-                    <input type="text" id="discord" name="discord" required placeholder="Ваш никнейм или тег">
+                    <input type="text" id="discord" required placeholder="Ваш никнейм или тег">
+                </div>
+
+                <div class="form-group">
+                    <label for="skills">Ваша специализация в Майнкрафте</label>
+                    <textarea id="skills" rows="4" required placeholder="PvP, редстоун-схемы, масштабное строительство, автоматизация, шпионаж..."></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="experience">На каких серверах играли раньше и почему хотите именно к нам?</label>
-                    <textarea id="experience" name="experience" rows="4" required placeholder="Расскажите о ваших достижениях на других СМП."></textarea>
+                    <textarea id="experience" rows="4" required placeholder="Расскажите о ваших достижениях на других СМП."></textarea>
                 </div>
 
-                <button type="submit">Отправить заявку</button>
+                <button type="submit" id="submitBtn">Отправить заявку</button>
             </form>
+
+            <!-- Кнопка перехода в Discord, если возникли проблемы -->
+            <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 85, 85, 0.1);">
+                <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Или присоединяйтесь к нашему серверу напрямую:</p>
+                <a href="https://discord.gg/gJ9uaJ7sb" target="_blank" style="text-decoration: none;">
+                    <button type="button" style="background: #5865F2; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);">Войти в Discord</button>
+                </a>
+            </div>
         </div>
 
     </div>
 
+    <!-- СКРИПТ ОТПРАВКИ И ЗАЩИТЫ ОТ СПАМА -->
+    <script>
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const nick = document.getElementById('nickname').value;
+            const ds = document.getElementById('discord').value;
+            const skills = document.getElementById('skills').value;
+            const exp = document.getElementById('experience').value;
+
+            // Ссылка на ваш личный вебхук Discord
+            const webhookUrl = 'https://discord.com/api/webhooks/1560826326259335281/ZQ7WMdhWhL79wKHRnxoy1TjiXnRAV3IjAWoQUq5hM2OKRYj6qaZRCS0q-nJvwKqPEoQm';
+
+            // Формируем красивое оформление сообщения для Discord
+            const payload = {
+                embeds: [{
+                    title: "🟢 НОВАЯ ЗАЯВКА В DREVO SAI",
+                    color: 16721493, // Красный цвет полоски
+                    fields: [
+                        { name: "Никнейм:", value: nick, inline: true },
+                        { name: "Discord:", value: ds, inline: true },
+                        { name: "Специализация:", value: skills },
+                        { name: "Опыт и мотивация:", value: exp }
+                    ],
+                    timestamp: new Date()
+                }]
+            };
+
+            // Отправка данных в Дискорд
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert('Заявка успешно отправлена в Discord фракции!');
+                document.getElementById('applicationForm').reset();
+                startCooldown(btn); // Запуск анти-спама
+            })
+            .catch(err => {
+                alert('Ошибка отправки. Попробуйте зайти на сервер напрямую.');
+                console.error(err);
+            });
+        });
+
+        // Функция анти-спама на 60 секунд
+        function startCooldown(button) {
+            let timeLeft = 60;
+            button.disabled = true;
+            button.style.background = '#444';
+            button.style.cursor = 'not-allowed';
+            button.style.boxShadow = 'none';
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                button.innerText = `Повторная отправка через ${timeLeft}с`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    button.disabled = false;
+                    button.innerText = 'Отправить заявку';
+                    button.style.background = '#ff5555';
+                    button.style.cursor = 'pointer';
+                    button.style.boxShadow = '0 4px 15px rgba(255, 85, 85, 0.3)';
+                }
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>
+
