@@ -471,6 +471,48 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
+        // Механика маскота Сая
+        const saiVideo = document.getElementById('saiVideo');
+        
+        // Функции управления состояниями
+        function playPeekOut() {
+            saiVideo.src = '1.mp4';
+            saiVideo.loop = false;
+            saiVideo.play().catch(e => console.log("Ждем клика для видео"));
+            
+            // Как только вылез (через 1 сек), начинает махать
+            saiVideo.onended = playWave;
+        }
+
+        function playWave() {
+            saiVideo.src = '2.mp4';
+            saiVideo.loop = true;
+            saiVideo.play();
+            
+            // Машет ровно 5 секунд, затем прячется обратно
+            setTimeout(playHide, 5000);
+        }
+
+        function playHide() {
+            saiVideo.src = '3.mp4';
+            saiVideo.loop = false;
+            saiVideo.play();
+            
+            // Как только спрятался, запускаем бесконечный цикл ожидания (например, 10 секунд) перед новым вылезом
+            saiVideo.onended = () => {
+                setTimeout(playPeekOut, 10000); // 10000 мс = 10 секунд отдыха под землей
+            };
+        }
+
+        // Запуск первого появления при загрузке страницы
+        window.addEventListener('load', () => {
+            setTimeout(playPeekOut, 2000); // Появится через 2 секунды после захода на сайт
+        });
     </script>
+    <!-- Персонаж Сай в углу экрана -->
+    <div id="saiCharacter" style="position: fixed; bottom: -10px; right: 20px; z-index: 9998; width: 120px; height: 120px; pointer-events: none;">
+        <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>
+    </div>
+
 </body>
 </html>
