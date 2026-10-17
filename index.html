@@ -113,15 +113,17 @@
             width: max-content;
             white-space: nowrap;
         }
-        .quote-card {
-            background: rgba(40, 20, 20, 0.7);
-            border-left: 3px solid #ff5555;
-            border-right: 1px solid rgba(255, 85, 85, 0.1);
-            padding: 15px 25px;
-            border-radius: 6px;
-            min-width: 320px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
+                .quote-card {
+                    background: rgba(40, 20, 20, 0.7);
+                    border-left: 3px solid #ff5555;
+                    border-right: 1px solid rgba(255, 85, 85, 0.1);
+                    padding: 15px 25px;
+                    border-radius: 6px;
+                    min-width: 320px;
+                    max-width: 450px; /* Задаем максимальную ширину карточки */
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                    white-space: normal; /* Разрешаем перенос длинного текста на новые строки */
+                }
         .quote-text {
             font-style: italic;
             color: #fff;
