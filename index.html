@@ -12,17 +12,29 @@
         }
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            /* Загружаем фоновую картинку stena.png и заставляем её повторяться */
             background-image: url('stena.png');
             background-repeat: repeat;
-            background-attachment: fixed;
-            background-color: #0f0202; /* Запасной цвет, пока грузится картинка */
+            /* Изменяем fixed на scroll и настраиваем размер, чтобы включить параллакс */
+            background-attachment: scroll;
+            background-position: center top;
+            background-size: 100% auto; 
+            background-color: #0f0202;
             color: #e1e1e6;
             line-height: 1.6;
             position: relative;
             min-height: 100vh;
             overflow-x: hidden;
+            /* Плавное смещение фона при скролле */
+            animation: backgroundParallax linear;
+            animation-timeline: scroll();
         }
+
+        /* Специальная анимация, которая привязана к прокрутке страницы */
+        @keyframes backgroundParallax {
+            from { background-position: center 0px; }
+            to { background-position: center -150px; } /* Чем больше число, тем сильнее движение фона */
+        }
+
         /* Накладываем поверх текстуры слабый красный градиент и размытое свечение */
         body::before {
             content: "";
