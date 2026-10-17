@@ -482,32 +482,42 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Механика маскота Сая с расширением .mov
+        // Универсальная механика маскота Сая для всех браузеров
         const saiVideo = document.getElementById('saiVideo');
         
+        // Автоматически выбираем формат: .mov для Safari (Apple), .webm для Хрома и остальных
+        function getExt() {
+            const ua = navigator.userAgent.toLowerCase();
+            const isSafari = (ua.indexOf('safari') !== -1) && (ua.indexOf('chrome') === -1);
+            return isSafari ? '.mov' : '.webm';
+        }
+
+        const ext = getExt();
+
         function playPeekOut() {
-            saiVideo.src = '1.mov'; // Поменяли на .mov
+            saiVideo.src = '1' + ext;
             saiVideo.loop = false;
-            saiVideo.play().catch(e => console.log("Ждем взаимодействия"));
+            saiVideo.play().catch(e => console.log("Браузер заблокировал автоплей"));
             saiVideo.onended = playWave;
         }
 
         function playWave() {
-            saiVideo.src = '2.mov'; // Поменяли на .mov
+            saiVideo.src = '2' + ext;
             saiVideo.loop = true;
-            saiVideo.play();
-            setTimeout(playHide, 5000);
+            saiVideo.play().catch(e => console.log(e));
+            setTimeout(playHide, 5000); // Машет ручкой ровно 5 секунд
         }
 
         function playHide() {
-            saiVideo.src = '3.mov'; // Поменяли на .mov
+            saiVideo.src = '3' + ext;
             saiVideo.loop = false;
-            saiVideo.play();
+            saiVideo.play().catch(e => console.log(e));
             saiVideo.onended = () => {
-                setTimeout(playPeekOut, 10000);
+                setTimeout(playPeekOut, 10000); // Прячется под землю на 10 секунд
             };
         }
 
+        // Запуск первого появления через 2 секунды после полной загрузки сайта
         window.addEventListener('load', () => {
             setTimeout(playPeekOut, 2000);
         });
