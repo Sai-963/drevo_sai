@@ -276,19 +276,19 @@
 <body>
 
     <header style="text-align: center;">
-        <!-- Общая невидимая коробка, центрированная по экрану -->
-        <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px;">
+        <!-- Общая коробка с темным фоном в цвет шапки, которая скроет границы MP4 -->
+        <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px; background: #1a0f0f; border-radius: 50%; box-shadow: 0 0 15px #1a0f0f;">
             
             <!-- Ваш круглый логотип фракции стоит строго по центру -->
             <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сай вылетает вбок на 95 пикселей вправо, не ломая позицию логотипа -->
+            <!-- Сай вылетает вбок на MP4 видео, сливаясь с темным фоном подложки -->
             <div id="saiCharacter" style="position: absolute; top: 5px; left: 95px; z-index: 1; width: 120px; height: 120px; pointer-events: none;">
-                <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>
+                <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px; background: #1a0f0f;"></video>
             </div>
             
         </div>
-        <h1>DREVO SAI</h1>
+        <h1>ДРЕВО SAI</h1>
         <p>Разные судьбы у наших ветвей, но вместе у ствола мы только сильней.</p>
     </header>
 
@@ -482,42 +482,33 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Универсальная механика маскота Сая для всех браузеров
+        // Надежная механика маскота Сая на обычных MP4
         const saiVideo = document.getElementById('saiVideo');
         
-        // Автоматически выбираем формат: .mov для Safari (Apple), .webm для Хрома и остальных
-        function getExt() {
-            const ua = navigator.userAgent.toLowerCase();
-            const isSafari = (ua.indexOf('safari') !== -1) && (ua.indexOf('chrome') === -1);
-            return isSafari ? '.mov' : '.webm';
-        }
-
-        const ext = getExt();
-
         function playPeekOut() {
-            saiVideo.src = '1' + ext;
+            saiVideo.src = '1.mp4'; // Снова используем MP4
             saiVideo.loop = false;
             saiVideo.play().catch(e => console.log("Браузер заблокировал автоплей"));
             saiVideo.onended = playWave;
         }
 
         function playWave() {
-            saiVideo.src = '2' + ext;
+            saiVideo.src = '2.mp4';
             saiVideo.loop = true;
             saiVideo.play().catch(e => console.log(e));
-            setTimeout(playHide, 5000); // Машет ручкой ровно 5 секунд
+            setTimeout(playHide, 5000); // Машет ручкой 5 секунд
         }
 
         function playHide() {
-            saiVideo.src = '3' + ext;
+            saiVideo.src = '3.mp4';
             saiVideo.loop = false;
             saiVideo.play().catch(e => console.log(e));
             saiVideo.onended = () => {
-                setTimeout(playPeekOut, 10000); // Прячется под землю на 10 секунд
+                setTimeout(playPeekOut, 10000); // Прячется на 10 секунд
             };
         }
 
-        // Запуск первого появления через 2 секунды после полной загрузки сайта
+        // Запуск через 2 секунды после загрузки страницы
         window.addEventListener('load', () => {
             setTimeout(playPeekOut, 2000);
         });
