@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Орден — Главная</title>
+    <title>Drevo Sai — Главная</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,25 +12,55 @@
         }
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: #121214;
+            background-color: #0f0202; /* Очень темный красный цвет */
             color: #e1e1e6;
             line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Создаем эффект глубокого размытого красного свечения на фоне */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: 
+                radial-gradient(circle at 20% 30%, #4a0d0d 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #5a0505 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, #2b0404 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
         }
         header {
-            background-color: #1a1a1e;
-            padding: 30px 20px;
+            background-color: rgba(26, 15, 15, 0.85);
+            padding: 40px 20px;
             text-align: center;
-            border-bottom: 2px solid #6272a4;
+            border-bottom: 2px solid #ff5555;
+            backdrop-filter: blur(10px);
+        }
+        /* Стили для вашего логотипа base.jpg */
+        .logo {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #ff5555;
+            box-shadow: 0 0 20px rgba(255, 85, 85, 0.6);
+            margin-bottom: 15px;
         }
         header h1 {
-            color: #ff79c6;
-            font-size: 2.5rem;
+            color: #ff5555;
+            font-size: 2.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
         }
         header p {
-            color: #bd93f9;
+            color: #ffb86c;
             font-style: italic;
             font-size: 1.1rem;
         }
@@ -40,19 +70,22 @@
             padding: 0 20px;
         }
         .section {
-            background: #1a1a1e;
+            background: rgba(26, 15, 15, 0.75);
             padding: 30px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 30px;
-            border: 1px solid #282a36;
+            border: 1px solid rgba(255, 85, 85, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
         h2 {
-            color: #50fa7b;
+            color: #ffb86c;
             margin-bottom: 20px;
-            border-bottom: 1px solid #44475a;
+            border-bottom: 1px solid rgba(255, 85, 85, 0.3);
             padding-bottom: 10px;
             text-transform: uppercase;
             font-size: 1.4rem;
+            letter-spacing: 1px;
         }
         .server-list {
             list-style: none;
@@ -60,14 +93,14 @@
         .server-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px;
-            background: #282a36;
+            padding: 14px;
+            background: rgba(40, 20, 20, 0.6);
             margin-bottom: 10px;
-            border-radius: 4px;
+            border-radius: 6px;
             border-left: 4px solid #ff5555;
+            border-right: 1px solid rgba(255, 85, 85, 0.1);
         }
         .server-status {
-            color: #ff5555;
             font-weight: bold;
         }
         .form-group {
@@ -76,36 +109,42 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #bd93f9;
+            color: #ffb86c;
             font-weight: bold;
         }
         input, textarea {
             width: 100%;
             padding: 12px;
-            background: #282a36;
-            border: 1px solid #44475a;
+            background: rgba(40, 20, 20, 0.8);
+            border: 1px solid rgba(255, 85, 85, 0.3);
             color: #fff;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
+            transition: all 0.3s;
         }
         input:focus, textarea:focus {
             outline: none;
-            border-color: #ff79c6;
+            border-color: #ff5555;
+            box-shadow: 0 0 10px rgba(255, 85, 85, 0.4);
         }
         button {
-            background: #50fa7b;
-            color: #121214;
+            background: #ff5555;
+            color: #fff;
             padding: 14px 28px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: bold;
             font-size: 1.1rem;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s, transform 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 85, 85, 0.3);
         }
         button:hover {
-            background: #8be9fd;
+            background: #ff6e6e;
+            box-shadow: 0 0 20px rgba(255, 85, 85, 0.6);
         }
         button:active {
             transform: scale(0.98);
@@ -115,7 +154,9 @@
 <body>
 
     <header>
-        <h1>НАША ОРГАНИЗАЦИЯ</h1>
+        <!-- Подключаем ваш логотип base.jpg -->
+        <img src="base.jpg" alt="Логотип Drevo Sai" class="logo">
+        <h1>DREVO SAI</h1>
         <p>Мы не ищем компромиссов. Мы забираем то, что наше.</p>
     </header>
 
@@ -148,7 +189,6 @@
             <h2>Вступление в организацию</h2>
             <p style="margin-bottom: 20px;">Нам нужны лучшие: строители масштабных ферм, PvP-бойцы, редстоунеры и опытные шпионы. Заполните анкету ниже. Если вы нам подойдете, с вами свяжутся.</p>
             
-            <!-- Вместо ССЫЛКА_НА_FORMSPREE позже вставим рабочий ключ для сбора заявок -->
             <form action="ССЫЛКА_НА_FORMSPREE" method="POST">
                 <div class="form-group">
                     <label for="nickname">Игровой никнейм</label>
