@@ -275,15 +275,15 @@
 </head>
 <body>
 
-    <header>
-        <!-- Общая коробка: расширили ширину до 220px, чтобы Саю хватило места справа -->
-        <div style="position: relative; display: inline-block; width: 220px; height: 130px; margin-bottom: 15px; text-align: left;">
+    <header style="text-align: center;">
+        <!-- Общая невидимая коробка, центрированная по экрану -->
+        <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px;">
             
-            <!-- Ваш круглый логотип фракции (стоит жестко по левому краю коробки) -->
-            <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0;">
+            <!-- Ваш круглый логотип фракции стоит строго по центру -->
+            <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сдвинули Сая дальше вправо (left: 100px вместо 40px), теперь он вылезает далеко за пределы круга -->
-            <div id="saiCharacter" style="position: absolute; top: 5px; left: 100px; z-index: 1; width: 120px; height: 120px; pointer-events: none;">
+            <!-- Сай вылетает вбок на 95 пикселей вправо, не ломая позицию логотипа -->
+            <div id="saiCharacter" style="position: absolute; top: 5px; left: 95px; z-index: 1; width: 120px; height: 120px; pointer-events: none;">
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>
             </div>
             
@@ -482,42 +482,34 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Механика маскота Сая
+        // Механика маскота Сая с расширением .mov
         const saiVideo = document.getElementById('saiVideo');
         
-        // Функции управления состояниями
         function playPeekOut() {
-            saiVideo.src = '1.mp4';
+            saiVideo.src = '1.mov'; // Поменяли на .mov
             saiVideo.loop = false;
-            saiVideo.play().catch(e => console.log("Ждем клика для видео"));
-            
-            // Как только вылез (через 1 сек), начинает махать
+            saiVideo.play().catch(e => console.log("Ждем взаимодействия"));
             saiVideo.onended = playWave;
         }
 
         function playWave() {
-            saiVideo.src = '2.mp4';
+            saiVideo.src = '2.mov'; // Поменяли на .mov
             saiVideo.loop = true;
             saiVideo.play();
-            
-            // Машет ровно 5 секунд, затем прячется обратно
             setTimeout(playHide, 5000);
         }
 
         function playHide() {
-            saiVideo.src = '3.mp4';
+            saiVideo.src = '3.mov'; // Поменяли на .mov
             saiVideo.loop = false;
             saiVideo.play();
-            
-            // Как только спрятался, запускаем бесконечный цикл ожидания (например, 10 секунд) перед новым вылезом
             saiVideo.onended = () => {
-                setTimeout(playPeekOut, 10000); // 10000 мс = 10 секунд отдыха под землей
+                setTimeout(playPeekOut, 10000);
             };
         }
 
-        // Запуск первого появления при загрузке страницы
         window.addEventListener('load', () => {
-            setTimeout(playPeekOut, 2000); // Появится через 2 секунды после захода на сайт
+            setTimeout(playPeekOut, 2000);
         });
     </script>
     <!-- Персонаж Сай в углу экрана -->
