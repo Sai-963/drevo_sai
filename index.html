@@ -12,26 +12,29 @@
         }
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: #0f0202;
+            /* Загружаем фоновую картинку stena.png и заставляем её повторяться */
+            background-image: url('stena.png');
+            background-repeat: repeat;
+            background-attachment: fixed;
+            background-color: #0f0202; /* Запасной цвет, пока грузится картинка */
             color: #e1e1e6;
             line-height: 1.6;
             position: relative;
             min-height: 100vh;
             overflow-x: hidden;
         }
+        /* Накладываем поверх текстуры слабый красный градиент и размытое свечение */
         body::before {
             content: "";
             position: fixed;
-            top: -10%;
-            left: -10%;
-            width: 120%;
-            height: 120%;
-            background: 
-                radial-gradient(circle at 20% 30%, #4a0d0d 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, #5a0505 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, #2b0404 0%, transparent 70%);
-            filter: blur(80px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Радиальный градиент: в центре прозрачнее, к краям уходит в темно-красный */
+            background: radial-gradient(circle at 50% 50%, rgba(74, 13, 13, 0.4) 0%, rgba(15, 2, 2, 0.85) 100%);
             z-index: -1;
+            pointer-events: none;
         }
         header {
             background-color: rgba(26, 15, 15, 0.85);
