@@ -93,6 +93,60 @@
             font-size: 1.4rem;
             letter-spacing: 1px;
         }
+        
+        /* СТИЛИ ДЛЯ ЦИТАТ */
+        .quotes-wrapper {
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(15, 5, 5, 0.4);
+            padding: 20px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 85, 85, 0.1);
+            margin-bottom: 10px;
+        }
+        .marquee-row {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+            white-space: nowrap;
+        }
+        .quote-card {
+            background: rgba(40, 20, 20, 0.7);
+            border-left: 3px solid #ff5555;
+            border-right: 1px solid rgba(255, 85, 85, 0.1);
+            padding: 15px 25px;
+            border-radius: 6px;
+            min-width: 320px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .quote-text {
+            font-style: italic;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        .quote-author {
+            color: #ffb86c;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        .slide-left { animation: scroll-left 25s linear infinite; }
+        .slide-right { animation: scroll-right 25s linear infinite; }
+        .marquee-row:hover { animation-play-state: paused; }
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes scroll-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* СТИЛИ ДЛЯ СКРИНШОТОВ */
         .showcase-container {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -145,6 +199,7 @@
             0% { transform: translateY(-50%); }
             100% { transform: translateY(0); }
         }
+        
         .form-group { margin-bottom: 20px; }
         label {
             display: block;
@@ -230,6 +285,25 @@
             <h2>О нас</h2>
             <p>Мы — сообщество, управляемое из единого центра одним лидером. Наша власть централизована, а наша позиция — нейтралитет.</p>
         </div>
+
+        <div class="section">
+            <h2>Цытаты участников Древа</h2>
+            <div class="quotes-wrapper">
+                <div class="marquee-row slide-left">
+                    <div class="quote-card"><p class="quote-text">«Власть едина, пока крепки наши корни у основания.»</p><p class="quote-author">— Офицер</p></div>
+                    <div class="quote-card"><p class="quote-text">«Нейтралитет — это не слабость, это ожидание момента.»</p><p class="quote-author">— Советник</p></div>
+                    <div class="quote-card"><p class="quote-text">«Власть едина, пока крепки наши корни у основания.»</p><p class="quote-author">— Офицер</p></div>
+                    <div class="quote-card"><p class="quote-text">«Нейтралитет — это не слабость, это ожидание момента.»</p><p class="quote-author">— Советник</p></div>
+                </div>
+                <div class="marquee-row slide-right">
+                    <div class="quote-card"><p class="quote-text">«Каждая ветвь видит свой мир, но ствол помнит истину.»</p><p class="quote-author">— Старейшина</p></div>
+                    <div class="quote-card"><p class="quote-text">«Мы не ищем войн, но горе тем, кто хочет нас срубить.»</p><p class="quote-author">— Страж</p></div>
+                    <div class="quote-card"><p class="quote-text">«Каждая ветвь видит свой мир, но ствол помнит истину.»</p><p class="quote-author">— Старейшина</p></div>
+                    <div class="quote-card"><p class="quote-text">«Мы не ищем войн, но горе тем, кто хочет нас срубить.»</p><p class="quote-author">— Страж</p></div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="section">
             <h2>Скрины жизни древа.</h2>
