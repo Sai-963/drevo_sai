@@ -12,14 +12,13 @@
         }
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: #0f0202; /* Очень темный красный цвет */
+            background-color: #0f0202;
             color: #e1e1e6;
             line-height: 1.6;
             position: relative;
             min-height: 100vh;
             overflow-x: hidden;
         }
-        /* Создаем эффект глубокого размытого красного свечения на фоне */
         body::before {
             content: "";
             position: fixed;
@@ -41,7 +40,6 @@
             border-bottom: 2px solid #ff5555;
             backdrop-filter: blur(10px);
         }
-        /* Стили для вашего логотипа base.jpg */
         .logo {
             width: 130px;
             height: 130px;
@@ -87,22 +85,75 @@
             font-size: 1.4rem;
             letter-spacing: 1px;
         }
-        .server-list {
-            list-style: none;
+
+        /* --- СТИЛИ ДЛЯ ПЛАВАЮЩИХ СКРИНШОТОВ --- */
+        .showcase-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: 380px; /* Фиксированная высота окна просмотра */
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            background: rgba(15, 5, 5, 0.5);
+            padding: 10px;
+            border: 1px solid rgba(255, 85, 85, 0.1);
         }
-        .server-item {
+        /* Затемнение сверху и снизу для эффекта кино */
+        .showcase-container::before, .showcase-container::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .showcase-container::before { top: 0; background: linear-gradient(to bottom, rgba(26,15,15,1), transparent); }
+        .showcase-container::after { bottom: 0; background: linear-gradient(to top, rgba(26,15,15,1), transparent); }
+
+        .marquee-column {
             display: flex;
-            justify-content: space-between;
-            padding: 14px;
-            background: rgba(40, 20, 20, 0.6);
-            margin-bottom: 10px;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .marquee-column img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
             border-radius: 6px;
-            border-left: 4px solid #ff5555;
-            border-right: 1px solid rgba(255, 85, 85, 0.1);
+            border: 2px solid rgba(255, 85, 85, 0.3);
+            transition: border-color 0.3s, transform 0.3s;
         }
-        .server-status {
-            font-weight: bold;
+        .marquee-column img:hover {
+            border-color: #ff5555;
+            transform: scale(1.02);
         }
+
+        /* Анимация вверх */
+        .move-up {
+            animation: scroll-up 12s linear infinite;
+        }
+        /* Анимация вниз */
+        .move-down {
+            animation: scroll-down 12s linear infinite;
+        }
+
+        /* Останавливаем анимацию при наведении мыши на всю колонку */
+        .marquee-column:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll-up {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); } /* Смещение на половину дублированного списка */
+        }
+        @keyframes scroll-down {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0); }
+        }
+        /* ------------------------------------- */
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -154,7 +205,6 @@
 <body>
 
     <header>
-        <!-- Подключаем ваш логотип base.jpg -->
         <img src="base.jpg" alt="Логотип Drevo Sai" class="logo">
         <h1>DREVO SAI</h1>
         <p>Мы не ищем компромиссов. Мы забираем то, что наше.</p>
@@ -164,25 +214,37 @@
         
         <div class="section">
             <h2>О нас</h2>
-            <p>Мы — скоординированная и доминирующая сила на крупнейших Ванила-СМП серверах. Наша цель — абсолютный экономический и политический контроль. Мы строим неприступные базы, контролируем спавны, держим монополию на ресурсы и диктуем свои правила игры.</p>
+            <p>Мы — скоординированная и доминирующая сила на крупнейших Ванила-СМП серверах. Наша цель — абсолютный экономический и political контроль. Мы строим неприступные базы, контролируем спавны, держим монополию на ресурсы и диктуем свои правила игры.</p>
         </div>
 
+        <!-- НОВЫЙ БЛОК: ГАЛЕРЕЯ С АНИМАЦИЕЙ -->
         <div class="section">
-            <h2>Наше влияние (Контролируемые СМП)</h2>
-            <ul class="server-list">
-                <li class="server-item">
-                    <span>Первый Ванильный Сервер</span>
-                    <span class="server-status" style="color: #50fa7b;">100% Контроль</span>
-                </li>
-                <li class="server-item">
-                    <span>Популярный СМП Проект</span>
-                    <span class="server-status" style="color: #ffb86c;">Подчинен</span>
-                </li>
-                <li class="server-item">
-                    <span>Новый приватный сервер</span>
-                    <span class="server-status" style="color: #ff5555;">В процессе захвата</span>
-                </li>
-            </ul>
+            <h2>Хроники завоеваний (Наши Скриншоты)</h2>
+            <div class="showcase-container">
+                
+                <!-- Левая колонка плывет ВВЕРХ (картинки дублируются для бесконечного цикла) -->
+                <div class="marquee-column move-up">
+                    <img src="screen1.jpg" alt="База 1">
+                    <img src="screen2.jpg" alt="Осада 2">
+                    <img src="screen3.jpg" alt="Ресурсы 3">
+                    <!-- Дубликат для бесшовности -->
+                    <img src="screen1.jpg" alt="База 1">
+                    <img src="screen2.jpg" alt="Осада 2">
+                    <img src="screen3.jpg" alt="Ресурсы 3">
+                </div>
+
+                <!-- Правая колонка плывет ВНИЗ -->
+                <div class="marquee-column move-down">
+                    <img src="screen3.jpg" alt="Ресурсы 3">
+                    <img src="screen2.jpg" alt="Осада 2">
+                    <img src="screen1.jpg" alt="База 1">
+                    <!-- Дубликат для бесшовности -->
+                    <img src="screen3.jpg" alt="Ресурсы 3">
+                    <img src="screen2.jpg" alt="Осада 2">
+                    <img src="screen1.jpg" alt="База 1">
+                </div>
+
+            </div>
         </div>
 
         <div class="section">
