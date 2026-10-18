@@ -42,10 +42,10 @@
             to { background-position: center -150px; }
         }
         header {
-            background-color: rgba(26, 15, 15, 0.85);
+            background-color: #000000; /* Делаем верхнее стекло абсолютно черным */
             padding: 40px 20px;
             text-align: center;
-            border-bottom: 2px solid #ff5555;
+            border-bottom: 2px solid #ff5555; /* Оставляем стильную красную полосу снизу */
             backdrop-filter: blur(10px);
         }
         .logo {
@@ -275,16 +275,16 @@
 </head>
 <body>
 
-    <header style="text-align: center;">
-        <!-- Общая коробка с темным фоном в цвет шапки, которая скроет границы MP4 -->
-        <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px; background: #1a0f0f; border-radius: 50%; box-shadow: 0 0 15px #1a0f0f;">
+    <header>
+        <!-- Невидимый контейнер для центрирования логотипа и привязки Сая -->
+        <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px;">
             
-            <!-- Ваш круглый логотип фракции стоит строго по центру -->
+            <!-- Ваш круглый логотип фракции -->
             <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сай вылетает вбок на MP4 видео, сливаясь с темным фоном подложки -->
+            <!-- Сай вылетает на MP4 видео и идеально сливается с черным фоном шапки -->
             <div id="saiCharacter" style="position: absolute; top: 5px; left: 95px; z-index: 1; width: 120px; height: 120px; pointer-events: none;">
-                <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px; background: #1a0f0f;"></video>
+                <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
             
         </div>
