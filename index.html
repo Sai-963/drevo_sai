@@ -428,7 +428,6 @@
             const skills = document.getElementById('skills').value;
             const exp = document.getElementById('experience').value;
 
-        <!-- БЛОК ЗАЯВКИ ПО НОВОЙ ОПТИМИЗИРОВАННОЙ СХЕМЕ -->
         <div class="section">
             <h2>📝 Подать заявку в Drevo Sai</h2>
             <form id="smpForm">
@@ -436,29 +435,24 @@
                     <label for="nickname">Ваш ник в Minecraft:</label>
                     <input type="text" id="nickname" required placeholder="Например, Player123">
                 </div>
-
                 <div class="form-group">
                     <label for="discord">Ваш Discord для связи:</label>
                     <input type="text" id="discord" required placeholder="Ваш никнейм или тег">
                 </div>
-
                 <div class="form-group">
                     <label for="skills">Ваша специализация (PvP, Редстоун, Строительство):</label>
                     <textarea id="skills" rows="3" required placeholder="В чем вы хороши больше всего?"></textarea>
                 </div>
-
                 <div class="form-group">
                     <label for="about">Расскажите о себе (почему хотите именно к нам?):</label>
                     <textarea id="about" rows="4" required placeholder="Опишите ваши достижения на других СМП."></textarea>
                 </div>
-
                 <button type="submit" id="submitBtn">Отправить заявку</button>
             </form>
             <p id="statusMessage" style="text-align: center; margin-top: 15px; font-weight: bold; color: #50fa7b;"></p>
 
-            <!-- ПРИВЕТСТВЕННЫЙ БЛОК С ССЫЛКОЙ -->
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 85, 85, 0.1);">
-                <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Свяжитесь с нами по всем вопросам или зайдите на сервер напрямую:</p>
+                <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Или присоединяйтесь к нашему серверу напрямую:</p>
                 <a href="https://discord.gg" target="_blank" style="text-decoration: none;">
                     <button type="button" style="background: #5865F2; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);">💬 Присоединиться к нашему Discord</button>
                 </a>
@@ -467,16 +461,13 @@
 
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ СКРИНШОТОВ -->
     <div id="imageModal" class="modal">
         <img class="modal-content" id="modalImg">
     </div>
 
     <script>
-        // НОВЫЙ БЕЗОТКАЗНЫЙ СКРИПТ ОТПРАВКИ ЧЕРЕЗ ТЕКСТОВЫЙ КОНТЕНТ
-        document.getElementById('smpForm').addEventListener('submit', function(e) {
+    document.getElementById('smpForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const btn = document.getElementById('submitBtn');
             const statusText = document.getElementById('statusMessage');
             
@@ -485,22 +476,18 @@
             const skills = document.getElementById('skills').value;
             const about = document.getElementById('about').value;
 
-            // Твой точный вебхук Дискорда
-            const webhookUrl = 'https://discord.com';
+            // Формируем красивый текст анкеты
+            const formattedText = `🟢 **НОВАЯ ЗАЯВКА В DREVO SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе/Мотивация:** ${about}`;
 
-            // Формируем простое текстовое сообщение, которое Discord принимает без проблем
-            const contentText = `🟢 **НОВАЯ ЗАЯВКА В ДРЕВО SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе/Мотивация:** ${about}\n\n*Устройство отправителя зафиксировано сайтом.*`;
-
-            // Шлем простой JSON с контентом и no-cors режимом
-            fetch(webhookUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: contentText })
+            // Копируем текст анкеты в буфер обмена игрока автоматически
+            navigator.clipboard.writeText(formattedText).then(() => {
+                alert('Ваша анкета скопирована! Сейчас откроется Discord — просто вставьте её (Ctrl+V) в канал заявок.');
+                window.open('https://discord.gg', '_blank');
+            }).catch(() => {
+                // Запасной вариант, если браузер заблокировал буфер
+                window.open('https://discord.gg', '_blank');
             });
 
-            // Мгновенный вывод статуса без ожидания ответа
-            statusText.innerText = "Заявка успешно отправлена фракции Drevo Sai!";
             document.getElementById('smpForm').reset();
             startCooldown(btn);
         });
@@ -521,12 +508,10 @@
                     button.style.background = '#ff5555';
                     button.style.cursor = 'pointer';
                     button.style.boxShadow = '0 4px 15px rgba(255, 85, 85, 0.3)';
-                    document.getElementById('statusMessage').innerText = "";
                 }
             }, 1000);
         }
 
-        // Логика маскота Сая (10.mp4, КД 2 минуты, тихие звуки)
         const saiVideo = document.getElementById('saiVideo');
         const saiCont = document.getElementById('saiCharacter');
         
@@ -534,10 +519,12 @@
             if(!saiVideo) return;
             saiVideo.src = '10.mp4';
             saiVideo.loop = false;
+            
             saiVideo.oncanplaythrough = () => {
                 if(saiCont) saiCont.style.pointerEvents = 'auto'; 
                 saiVideo.play().catch(e => console.log("Ждем клика"));
             };
+            
             saiVideo.onended = () => {
                 saiVideo.src = ''; 
                 if(saiCont) saiCont.style.pointerEvents = 'none'; 
@@ -558,7 +545,6 @@
             setTimeout(startSaiCycle, 2000);
         });
 
-        // Модальное окно скриншотов
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImg');
         const showcase = document.querySelector('.showcase-container');
