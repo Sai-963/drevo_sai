@@ -195,66 +195,72 @@
     </div>
 
     <script>
-        document.getElementById('smpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            
-            const nick = document.getElementById('nickname').value;
-            const ds = document.getElementById('discord').value;
-            const skills = document.getElementById('skills').value;
-            const about = document.getElementById('about').value;
+        const saiVideo = document.getElementById('saiVideo');
+        const saiCont = document.getElementById('saiCharacter');
+        const smpForm = document.getElementById('smpForm');
+        const logoImg = document.querySelector('.logo');
 
-            // Настраиваем красивый внешний вид сообщения для Discord (Embed)
-            const webhookData = {
-                username: "Заявки с сайта",
-                avatar_url: "https://imgur.com", // Сюда можно поставить аватарку бота
-                embeds: [{
-                    title: "🟢 НОВАЯ ЗАЯВКА В DREVO SAI",
-                    color: 16733525, // Красный цвет линии (#ff5555 в десятичном формате)
-                    fields: [
-                        { name: "Ник", value: nick, inline: true },
-                        { name: "Юз", value: ds, inline: true },
-                        { name: "Способности", value: skills, inline: false },
-                        { name: "О себе и планы", value: about, inline: false }
-                    ],
-                    timestamp: new Date().toISOString()
-                }]
-            };
+        // Переменная-флаг: разрешён ли звук в текущем цикле появления
+        let isAudioAllowedInThisCycle = true;
 
-            // Ссылка на ваш вебхук
-            const webhookUrl = "https://discord.com/api/webhooks/1560826326259335281/ZQ7WMdhWhL79wKHRnxoy1TjiXnRAV3IjAWoQUq5hM2OKRYj6qaZRCS0q-nJvwKqPEoQm";
-
-            btn.disabled = true;
-            btn.innerText = 'Отправка...';
-
-            // Отправляем данные напрямую в Дискорд
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(webhookData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Ваша заявка успешно отправлена прямо в Discord прямо в организацию! Ожидайте ответа.');
-                    document.getElementById('smpForm').reset();
-                    startCooldown(btn);
-                } else {
-                    throw new Error('Ошибка сервера');
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                alert('Произошла ошибка при автоматической отправке. Попробуем скопировать в буфер обмена...');
+        // 1. Отправка формы на вебхук Discord с твоими новыми полями
+        if (smpForm) {
+            smpForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('submitBtn');
                 
-                // Резервный вариант на случай сбоя сети — копируем в буфер
-                const backupText = `🟢 **НОВАЯ ЗАЯВКА В ДРЕВО SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе:** ${about}`;
-                navigator.clipboard.writeText(backupText).then(() => {
-                    window.open('https://discord.gg', '_blank');
+                const nick = document.getElementById('nickname').value;
+                const ds = document.getElementById('discord').value;
+                const skills = document.getElementById('skills').value;
+                const about = document.getElementById('about').value;
+
+                const webhookData = {
+                    username: "Заявки с сайта",
+                    avatar_url: "https://imgur.com",
+                    embeds: [{
+                        title: "🟢 НОВАЯ ЗАЯВКА В ДРЕВО SAI",
+                        color: 16733525,
+                        fields: [
+                            { name: "Ник", value: nick, inline: true },
+                            { name: "Юз", value: ds, inline: true },
+                            { name: "Способности", value: skills, inline: false },
+                            { name: "О себе и планы", value: about, inline: false }
+                        ],
+                        timestamp: new Date().toISOString()
+                    }]
+                };
+
+                const webhookUrl = "https://discord.com";
+
+                btn.disabled = true;
+                btn.innerText = 'Отправка...';
+
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(webhookData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Ваша заявка успешно отправлена прямо в Discord фракции!');
+                        smpForm.reset();
+                        startCooldown(btn);
+                    } else {
+                        throw new Error('Ошибка сервера');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Ошибка автоотправки. Копируем анкету в буфер обмена...');
+                    const backupText = `🟢 **НОВАЯ ЗАЯВКА В ДРЕВО SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе:** ${about}`;
+                    navigator.clipboard.writeText(backupText).then(() => {
+                        window.open('https://discord.gg', '_blank');
+                    });
+                    btn.disabled = false;
+                    btn.innerText = 'Отправить заявку';
                 });
-                btn.disabled = false;
-                btn.innerText = 'Отправить заявку';
             });
-        });
+        }
 
         function startCooldown(button) {
             let timeLeft = 60;
@@ -268,15 +274,14 @@
             }, 1000);
         }
 
-        const saiVideo = document.getElementById('saiVideo');
-        const saiCont = document.getElementById('saiCharacter');
-        
+        // 2. Логика цикла видео
         function startSaiCycle() {
             if(!saiVideo) return;
             saiVideo.src = '10.mp4'; saiVideo.loop = false;
             
             saiVideo.oncanplaythrough = () => {
                 if(saiCont) saiCont.style.pointerEvents = 'auto'; 
+                isAudioAllowedInThisCycle = true;
                 saiVideo.play().catch(e => console.log("Ждем клика"));
             };
             
@@ -286,20 +291,28 @@
             };
         }
 
-        // Находим круглый логотип
-        const logoImg = document.querySelector('.logo');
+        // 3. КЛИК ПО ВИДЕО (За границами круга): 1 звук за появление
+        if(saiCont) {
+            saiCont.addEventListener('click', function(e) {
+                if (!isAudioAllowedInThisCycle) return;
 
-        if(logoImg) {
-            logoImg.addEventListener('click', function() {
-                // 1. Твой оригинальный звук (работает при клике на лого)
                 const randomNum = Math.floor(Math.random() * 4) + 1;
                 const audio = new Audio(randomNum + '.aac'); audio.volume = 0.15; 
-                audio.play().catch(e => console.log("Звук заблокирован"));
+                audio.play()
+                    .then(() => {
+                        isAudioAllowedInThisCycle = false;
+                    })
+                    .catch(e => console.log("Звук заблокирован"));
+            });
+        }
 
-                // 2. Вспышка срабатывает строго на круглую аватарку
+        // 4. КЛИК ПО КРУГУ (Логотипу): только вспышка, БЕЗ звука
+        if(logoImg) {
+            logoImg.addEventListener('click', function(e) {
+                e.stopPropagation(); 
+
                 logoImg.classList.add('flash-active');
                 
-                // Через 150 миллисекунд плавно выключаем свечение
                 setTimeout(() => {
                     logoImg.classList.remove('flash-active');
                 }, 150);
@@ -308,6 +321,7 @@
 
         window.addEventListener('load', () => { setTimeout(startSaiCycle, 2000); });
 
+        // 5. Работа с модальным окном картинок
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImg');
         const showcase = document.querySelector('.showcase-container');
