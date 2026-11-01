@@ -276,13 +276,13 @@
 <body>
 
     <header>
-        <!-- Невидимый контейнер для центрирования логотипа и привязки Сая -->
+        <!-- Container for logo and Sai -->
         <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px;">
             
             <!-- Ваш круглый логотип фракции -->
             <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сай вылетает на MP4 видео, теперь с поддержкой бесшовного переключения -->
+            <!-- Сай вылетает на едином MP4 видео -->
             <div id="saiCharacter" style="position: absolute; top: -45px; left: 32px; z-index: 1; width: 150px; height: 150px; pointer-events: none;">
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
@@ -500,57 +500,28 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Бесшовная механика маскота Сая без микро-обрывов и мерцаний
+        // Новая бесшовная механика маскота на едином файле 10.mp4
         const saiVideo = document.getElementById('saiVideo');
         
-        // Кэшируем видеопотоки в памяти браузера, чтобы они не моргали при смене src
-        const videoCache = {
-            1: new Image(), // Создаем невидимые объекты для удержания файлов в сети
-            2: new Image(),
-            3: new Image()
-        };
-        videoCache[1].src = '1.mp4';
-        videoCache[2].src = '2.mp4';
-        videoCache[3].src = '3.mp4';
-
-        function playPeekOut() {
-            saiVideo.src = '1.mp4';
-            saiVideo.loop = false;
+        function startSaiCycle() {
+            // Подгружаем единый готовый видеоролик
+            saiVideo.src = '10.mp4';
+            saiVideo.loop = false; // Проигрываем строго один раз от начала до конца
             
-            // Ждем, пока видео будет готово к воспроизведению без задержек
-            saiVideo.oncanplaythrough = () => {
-                saiVideo.play().catch(e => console.log("Автоплей ожидает клика"));
-            };
+            saiVideo.play().catch(e => console.log("Автоплей ожидает первого клика на сайте"));
             
-            // Как только вылез, моментально переключаем на зацикленный взмах
-            saiVideo.onended = playWave;
-        }
-
-        function playWave() {
-            saiVideo.src = '2.mp4';
-            saiVideo.loop = true;
-            saiVideo.play().catch(e => console.log(e));
-            
-            // Машет ровно 5 секунд, затем плавно уходит обратно
-            setTimeout(playHide, 5000);
-        }
-
-        function playHide() {
-            // Отключаем бесконечный цикл махания перед тем, как спрятаться
-            saiVideo.loop = false;
-            saiVideo.src = '3.mp4';
-            saiVideo.play().catch(e => console.log(e));
-            
-            // Как только полностью залез назад под логотип
+            // Как только видео полностью доиграло (вылез + помахал + залез)
             saiVideo.onended = () => {
-                saiVideo.src = ''; // Очищаем плеер на время засады
-                setTimeout(playPeekOut, 10000); // Сидит в засаде 10 секунд
+                saiVideo.src = ''; // Временно гасим плеер, чтобы не висел последний кадр
+                
+                // Делаем паузу в 10 секунд перед тем, как запустить цикл заново
+                setTimeout(startSaiCycle, 10000); 
             };
         }
 
-        // Запуск анимации Сая через 2 секунды после полной загрузки сайта
+        // Первое появление маленького Сая через 2 секунды после полной загрузки сайта
         window.addEventListener('load', () => {
-            setTimeout(playPeekOut, 2000);
+            setTimeout(startSaiCycle, 2000);
         });
     </script>
     <!-- Персонаж Сай в углу экрана -->
