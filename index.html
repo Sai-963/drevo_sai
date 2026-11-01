@@ -95,9 +95,6 @@
             box-shadow: 0 0 30px rgba(255, 85, 85, 0.5); transform: scale(0.7); transition: transform 0.3s ease;
         }
         .modal.show .modal-content { transform: scale(1); }
-        #statusMessage { font-weight: bold; text-align: center; margin-top: 15px; }
-        #statusMessage.success { color: #50fa7b; }
-        #statusMessage.error { color: #ff5555; }
     </style>
 </head>
 <body>
@@ -173,7 +170,6 @@
                 </div>
                 <button type="submit" id="submitBtn">Отправить заявку</button>
             </form>
-            <p id="statusMessage"></p>
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 85, 85, 0.1);">
                 <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Или присоединяйтесь к нашему серверу напрямую:</p>
                 <a href="https://discord.gg" target="_blank" style="text-decoration: none;">
@@ -188,52 +184,27 @@
     </div>
 
     <script>
-        document.getElementById('smpForm').addEventListener('submit', async function(e) {
+        document.getElementById('smpForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const statusMessage = document.getElementById('statusMessage');
-            
-            const nickname = document.getElementById('nickname').value;
-            const discordTag = document.getElementById('discord').value;
+            const nick = document.getElementById('nickname').value;
+            const ds = document.getElementById('discord').value;
             const skills = document.getElementById('skills').value;
             const about = document.getElementById('about').value;
 
-            // Вебхук твоего сервера через стабильный прокси-домен discord.su
-            const webhookUrl = "https://discord.su";
+            // Форматируем текст анкеты для буфера обмена
+            const formattedText = `🟢 **НОВАЯ ЗАЯВКА В DREVO SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе/Мотивация:** ${about}`;
 
-            const discordMessage = {
-                embeds: [{
-                    title: "📢 Новая заявка в DREVO SAI!",
-                    color: 16721493,
-                    fields: [
-                        { name: "Игровой ник", value: nickname, inline: true },
-                        { name: "Discord для связи", value: discordTag, inline: true },
-                        { name: "Специализация", value: skills },
-                        { name: "О себе / Мотивация", value: about }
-                    ],
-                    timestamp: new Date()
-                }]
-            };
+            // Железобетонная отправка: копируем в буфер и кидаем на инвайт Дискорда
+            navigator.clipboard.writeText(formattedText).then(() => {
+                alert('Ваша анкета успешно скопирована! Сейчас откроется Discord — просто вставьте её (Ctrl+V) в канал заявок фракции.');
+                window.open('https://discord.gg', '_blank');
+            }).catch(() => {
+                window.open('https://discord.gg', '_blank');
+            });
 
-            try {
-                const response = await fetch(webhookUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(discordMessage)
-                });
-
-                statusMessage.innerText = "✅ Заявка успешно отправлена!";
-                statusMessage.className = "success";
-                document.getElementById('smpForm').reset();
-                startCooldown(btn);
-                
-                setTimeout(() => {
-                    window.location.href = "https://discord.gg";
-                }, 2000);
-            } catch (error) {
-                statusMessage.innerText = "❌ Ошибка сети.";
-                statusMessage.className = "error";
-            }
+            document.getElementById('smpForm').reset();
+            startCooldown(btn);
         });
 
         function startCooldown(button) {
@@ -244,7 +215,6 @@
                 if (timeLeft <= 0) {
                     clearInterval(timer); button.disabled = false; button.innerText = 'Отправить заявку';
                     button.style.background = '#ff5555'; button.style.cursor = 'pointer'; button.style.boxShadow = '0 4px 15px rgba(255, 85, 85, 0.3)';
-                    document.getElementById('statusMessage').innerText = "";
                 }
             }, 1000);
         }
@@ -255,10 +225,12 @@
         function startSaiCycle() {
             if(!saiVideo) return;
             saiVideo.src = '10.mp4'; saiVideo.loop = false;
+            
             saiVideo.oncanplaythrough = () => {
                 if(saiCont) saiCont.style.pointerEvents = 'auto'; 
                 saiVideo.play().catch(e => console.log("Ждем клика"));
             };
+            
             saiVideo.onended = () => {
                 saiVideo.src = ''; if(saiCont) saiCont.style.pointerEvents = 'none'; 
                 setTimeout(startSaiCycle, 120000); 
