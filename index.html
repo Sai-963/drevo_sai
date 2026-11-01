@@ -282,7 +282,7 @@
             <!-- Ваш круглый логотип фракции -->
             <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сдвинули ровно на 3 пикселя левее (left: 32px), высота идеальная (top: -45px) -->
+            <!-- Сай вылетает на MP4 видео, теперь с поддержкой бесшовного переключения -->
             <div id="saiCharacter" style="position: absolute; top: -45px; left: 32px; z-index: 1; width: 150px; height: 150px; pointer-events: none;">
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
@@ -291,7 +291,6 @@
         <h1>ДРЕВО SAI</h1>
         <p>Разные судьбы у наших ветвей, но вместе у ствола мы только сильней.</p>
     </header>
-
 
     <div class="container">
         
@@ -501,13 +500,29 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Надежная механика маскота Сая на обычных MP4
+        // Бесшовная механика маскота Сая без микро-обрывов и мерцаний
         const saiVideo = document.getElementById('saiVideo');
         
+        // Кэшируем видеопотоки в памяти браузера, чтобы они не моргали при смене src
+        const videoCache = {
+            1: new Image(), // Создаем невидимые объекты для удержания файлов в сети
+            2: new Image(),
+            3: new Image()
+        };
+        videoCache[1].src = '1.mp4';
+        videoCache[2].src = '2.mp4';
+        videoCache[3].src = '3.mp4';
+
         function playPeekOut() {
-            saiVideo.src = '1.mp4'; // Снова используем MP4
+            saiVideo.src = '1.mp4';
             saiVideo.loop = false;
-            saiVideo.play().catch(e => console.log("Браузер заблокировал автоплей"));
+            
+            // Ждем, пока видео будет готово к воспроизведению без задержек
+            saiVideo.oncanplaythrough = () => {
+                saiVideo.play().catch(e => console.log("Автоплей ожидает клика"));
+            };
+            
+            // Как только вылез, моментально переключаем на зацикленный взмах
             saiVideo.onended = playWave;
         }
 
@@ -515,19 +530,25 @@
             saiVideo.src = '2.mp4';
             saiVideo.loop = true;
             saiVideo.play().catch(e => console.log(e));
-            setTimeout(playHide, 5000); // Машет ручкой 5 секунд
+            
+            // Машет ровно 5 секунд, затем плавно уходит обратно
+            setTimeout(playHide, 5000);
         }
 
         function playHide() {
-            saiVideo.src = '3.mp4';
+            // Отключаем бесконечный цикл махания перед тем, как спрятаться
             saiVideo.loop = false;
+            saiVideo.src = '3.mp4';
             saiVideo.play().catch(e => console.log(e));
+            
+            // Как только полностью залез назад под логотип
             saiVideo.onended = () => {
-                setTimeout(playPeekOut, 10000); // Прячется на 10 секунд
+                saiVideo.src = ''; // Очищаем плеер на время засады
+                setTimeout(playPeekOut, 10000); // Сидит в засаде 10 секунд
             };
         }
 
-        // Запуск через 2 секунды после загрузки страницы
+        // Запуск анимации Сая через 2 секунды после полной загрузки сайта
         window.addEventListener('load', () => {
             setTimeout(playPeekOut, 2000);
         });
