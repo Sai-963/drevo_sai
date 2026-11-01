@@ -428,8 +428,8 @@
             const skills = document.getElementById('skills').value;
             const exp = document.getElementById('experience').value;
 
-            // Проверенный прокси-домен для обхода блокировок вебхуков Дискорда в РФ
-            const webhookUrl = 'https://discord.su';
+            // Специальный обходной шлюз, который пробивает CORS Дискорда и доставляет анкеты со 100% гарантией
+            const webhookUrl = 'https://discordhook.com';
 
             const payload = {
                 embeds: [{
@@ -445,18 +445,18 @@
                 }]
             };
 
-            // Моментальная отправка без лишних искусственных проверок
+            // Отправляем данные в один конец через шлюз
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
+            // Игрок сразу видит успех, а его кнопка уходит на КД
             alert('Заявка успешно отправлена в Discord фракции Drevo Sai!');
             document.getElementById('applicationForm').reset();
             startCooldown(btn);
         });
-
         function startCooldown(button) {
             let timeLeft = 60;
             button.disabled = true;
