@@ -26,6 +26,13 @@
         .logo {
             width: 130px; height: 130px; object-fit: cover; border-radius: 50%;
             border: 3px solid #ff5555; box-shadow: 0 0 20px rgba(255, 85, 85, 0.6); margin-bottom: 15px;
+            transition: all 0.1s ease; /* Добавили для плавности вспышки */
+        }
+        /* ВСТАВИЛИ СЮДА: Стиль вспышки для круглой аватарки */
+        .logo.flash-active {
+            background-color: rgba(255, 0, 0, 0.7) !important;
+            box-shadow: 0 0 35px rgba(255, 0, 0, 1) !important;
+            border-color: #ff0000 !important;
         }
         header h1 {
             color: #ff5555; font-size: 2.8rem; text-transform: uppercase; letter-spacing: 3px;
@@ -281,22 +288,20 @@
 
         if(saiCont) {
             saiCont.addEventListener('click', function() {
-                // 1. Запускаем звук (твой оригинальный код)
+                // 1. Твой оригинальный звук
                 const randomNum = Math.floor(Math.random() * 4) + 1;
                 const audio = new Audio(randomNum + '.aac'); audio.volume = 0.15; 
                 audio.play().catch(e => console.log("Звук заблокирован"));
 
-                // 2. Логика красной вспышки
-                const flash = document.getElementById('flashOverlay');
-                if (flash) {
-                    flash.style.transition = 'none'; // Мгновенно включаем яркость
-                    flash.style.opacity = '1';
+                // 2. Вспышка на саму круглую аватарку
+                const logoImg = document.querySelector('.logo');
+                if (logoImg) {
+                    logoImg.classList.add('flash-active'); // Включаем красное свечение
                     
-                    // Через 50 миллисекунд запускаем плавное затухание обратно в 0
+                    // Через 150 миллисекунд плавно выключаем
                     setTimeout(() => {
-                        flash.style.transition = 'opacity 0.6s ease-out';
-                        flash.style.opacity = '0';
-                    }, 50);
+                        logoImg.classList.remove('flash-active');
+                    }, 150);
                 }
             });
         }
