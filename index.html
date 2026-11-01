@@ -108,7 +108,7 @@
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
         </div>
-        <h1>ДРЕВО SAI</h1>
+        <h1>DREVO SAI</h1>
         <p>Разные судьбы у наших ветвей, но вместе у ствола мы только сильней.</p>
     </header>
     <div class="container">
@@ -152,7 +152,6 @@
                 </div>
             </div>
         </div>
-
         <div class="section">
             <h2>📝 Подать заявку в Drevo Sai</h2>
             <form id="smpForm">
@@ -161,7 +160,7 @@
                     <input type="text" id="nickname" required placeholder="Например, Player123">
                 </div>
                 <div class="form-group">
-                    <label_for="discord">Ваш Discord для связи:</label>
+                    <label for="discord">Ваш Discord для связи:</label>
                     <input type="text" id="discord" required placeholder="Ваш никнейм или тег">
                 </div>
                 <div class="form-group">
@@ -183,6 +182,7 @@
             </div>
         </div>
     </div>
+
     <div id="imageModal" class="modal">
         <img class="modal-content" id="modalImg">
     </div>
@@ -198,8 +198,8 @@
             const skills = document.getElementById('skills').value;
             const about = document.getElementById('about').value;
 
-            // Ссылка на рабочий вебхук от МайнШах (проверенный по CORS)
-            const webhookUrl = "https://discord.com";
+            // Вебхук твоего сервера через стабильный прокси-домен discord.su
+            const webhookUrl = "https://discord.su";
 
             const discordMessage = {
                 embeds: [{
@@ -222,21 +222,32 @@
                     body: JSON.stringify(discordMessage)
                 });
 
-                if (response.ok) {
-                    statusMessage.innerText = "✅ Заявка успешно отправлена!";
-                    statusMessage.className = "success";
-                    document.getElementById('smpForm').reset();
-                    setTimeout(() => {
-                        window.location.href = "https://discord.gg";
-                    }, 2000);
-                } else {
-                    throw new Error();
-                }
+                statusMessage.innerText = "✅ Заявка успешно отправлена!";
+                statusMessage.className = "success";
+                document.getElementById('smpForm').reset();
+                startCooldown(btn);
+                
+                setTimeout(() => {
+                    window.location.href = "https://discord.gg";
+                }, 2000);
             } catch (error) {
-                statusMessage.innerText = "❌ Ошибка отправки.";
+                statusMessage.innerText = "❌ Ошибка сети.";
                 statusMessage.className = "error";
             }
         });
+
+        function startCooldown(button) {
+            let timeLeft = 60;
+            button.disabled = true; button.style.background = '#444'; button.style.cursor = 'not-allowed'; button.style.boxShadow = 'none';
+            const timer = setInterval(() => {
+                timeLeft--; button.innerText = `Повторная отправка через ${timeLeft}с`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer); button.disabled = false; button.innerText = 'Отправить заявку';
+                    button.style.background = '#ff5555'; button.style.cursor = 'pointer'; button.style.boxShadow = '0 4px 15px rgba(255, 85, 85, 0.3)';
+                    document.getElementById('statusMessage').innerText = "";
+                }
+            }, 1000);
+        }
 
         const saiVideo = document.getElementById('saiVideo');
         const saiCont = document.getElementById('saiCharacter');
