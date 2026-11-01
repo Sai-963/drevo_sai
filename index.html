@@ -406,8 +406,8 @@
             </form>
 
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 85, 85, 0.1);">
-                <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Наш дискорд сервер:</p>
-                <a href="https://discord.gg" target="_blank" style="text-decoration: none;">
+                <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Или присоединяйтесь к нашему серверу напрямую:</p>
+                <a href="https://discord.gg/nnXFgs5dy" target="_blank" style="text-decoration: none;">
                     <button type="button" style="background: #5865F2; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);">Войти в Discord</button>
                 </a>
             </div>
@@ -428,7 +428,7 @@
             const skills = document.getElementById('skills').value;
             const exp = document.getElementById('experience').value;
 
-            // Используем надежный прокси-домен, чтобы запросы долетали без VPN
+            // Проверенный прокси-домен для обхода блокировок вебхуков Дискорда в РФ
             const webhookUrl = 'https://discord.su';
 
             const payload = {
@@ -445,14 +445,13 @@
                 }]
             };
 
-            // Отправляем запрос в один конец, не заставляя браузер докапываться до ответа сервера
+            // Моментальная отправка без лишних искусственных проверок
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            // Сразу же считаем отправку успешной для игрока
             alert('Заявка успешно отправлена в Discord фракции Drevo Sai!');
             document.getElementById('applicationForm').reset();
             startCooldown(btn);
@@ -478,6 +477,38 @@
             }, 1000);
         }
 
+        // Новая бесшовная механика маскота на едином файле 10.mp4 с тихими звуками и КД 2 минуты
+        const saiVideo = document.getElementById('saiVideo');
+        const saiCont = document.getElementById('saiCharacter');
+        
+        function startSaiCycle() {
+            saiVideo.src = '10.mp4';
+            saiVideo.loop = false;
+            
+            saiVideo.oncanplaythrough = () => {
+                saiCont.style.pointerEvents = 'auto'; 
+                saiVideo.play().catch(e => console.log("Автоплей ожидает клика"));
+            };
+            
+            saiVideo.onended = () => {
+                saiVideo.src = ''; 
+                saiCont.style.pointerEvents = 'none'; 
+                setTimeout(startSaiCycle, 120000); 
+            };
+        }
+
+        saiCont.addEventListener('click', function() {
+            const randomNum = Math.floor(Math.random() * 4) + 1;
+            const audio = new Audio(randomNum + '.aac');
+            audio.volume = 0.15; 
+            audio.play().catch(e => console.log("Браузер заблокировал звук"));
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(startSaiCycle, 2000);
+        });
+
+        // Логика модального окна для скриншотов
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImg');
         const showcase = document.querySelector('.showcase-container');
@@ -494,53 +525,6 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Новая бесшовная механика маскота на едином файле 10.mp4 с тихими звуками и КД 2 минуты
-        const saiVideo = document.getElementById('saiVideo');
-        const saiCont = document.getElementById('saiCharacter');
-        
-        function startSaiCycle() {
-            // Подгружаем единый видеоролик
-            saiVideo.src = '10.mp4';
-            saiVideo.loop = false;
-            
-            // Как только видео готово, включаем возможность кликать по Саю
-            saiVideo.oncanplaythrough = () => {
-                saiCont.style.pointerEvents = 'auto'; 
-                saiVideo.play().catch(e => console.log("Автоплей ожидает первого клика"));
-            };
-            
-            // Как только видео полностью доиграло и Сай залез обратно
-            saiVideo.onended = () => {
-                saiVideo.src = ''; // Очищаем плеер
-                saiCont.style.pointerEvents = 'none'; // Отключаем клики, пока Сая нет на экране
-                
-                // Делаем паузу в 2 минуты (120000 миллисекунд) перед тем, как запустить цикл заново
-                setTimeout(startSaiCycle, 120000); 
-            };
-        }
-
-        // Логика воспроизведения тихого случайного звука (от 1 до 4) при клике на Сая
-        saiCont.addEventListener('click', function() {
-            // Выбираем случайное число от 1 до 4
-            const randomNum = Math.floor(Math.random() * 4) + 1;
-            
-            const audio = new Audio(randomNum + '.aac');
-            audio.volume = 0.15; // Сделали звук значительно тише (приятный фоновый уровень)
-            
-            audio.play().catch(e => {
-                console.log("Браузер заблокировал звук");
-            });
-        });
-
-        // Первое появление маленького Сая через 2 секунды после полной загрузки сайта
-        window.addEventListener('load', () => {
-            setTimeout(startSaiCycle, 2000);
-        });
     </script>
-    <!-- Персонаж Сай в углу экрана -->
-    <div id="saiCharacter" style="position: fixed; bottom: -10px; right: 20px; z-index: 9998; width: 120px; height: 120px; pointer-events: none;">
-        <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>
-    </div>
-
 </body>
 </html>
