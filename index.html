@@ -276,14 +276,14 @@
 <body>
 
     <header>
-        <!-- Container for logo and Sai -->
+        <!-- Контейнер для логотипа и Сая -->
         <div style="position: relative; display: inline-block; width: 130px; height: 130px; margin-bottom: 15px;">
             
             <!-- Ваш круглый логотип фракции -->
             <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сай вылетает на едином MP4 видео -->
-            <div id="saiCharacter" style="position: absolute; top: -45px; left: 32px; z-index: 1; width: 150px; height: 150px; pointer-events: none;">
+            <!-- Сай вылетает на едином MP4 видео (теперь на него можно нажимать) -->
+            <div id="saiCharacter" style="position: absolute; top: -45px; left: 32px; z-index: 1; width: 150px; height: 150px; pointer-events: auto; cursor: pointer;">
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
             
@@ -522,6 +522,19 @@
         // Первое появление маленького Сая через 2 секунды после полной загрузки сайта
         window.addEventListener('load', () => {
             setTimeout(startSaiCycle, 2000);
+        });
+        // Логика воспроизведения случайного звука при клике на Сая
+        document.getElementById('saiCharacter').addEventListener('click', function() {
+            // Выбираем случайное число от 1 до 3
+            const randomNum = Math.floor(Math.random() * 3) + 1;
+            
+            // Создаем аудио-объект и запускаем выбранный файл (1.aac, 2.aac или 3.aac)
+            const audio = new Audio(randomNum + '.aac');
+            audio.volume = 0.8; // Громкость звука (от 0.0 до 1.0)
+            
+            audio.play().catch(e => {
+                console.log("Браузер заблокировал звук. Сначала кликните в любом другом месте сайта.");
+            });
         });
     </script>
     <!-- Персонаж Сай в углу экрана -->
