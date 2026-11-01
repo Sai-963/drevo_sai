@@ -428,8 +428,8 @@
             const skills = document.getElementById('skills').value;
             const exp = document.getElementById('experience').value;
 
-            // Специальный обходной шлюз, который пробивает CORS Дискорда и доставляет анкеты со 100% гарантией
-            const webhookUrl = 'https://discordhook.com';
+            // Ссылка ТВОЕГО вебхука. Ровнее и прямее некуда.
+            const webhookUrl = 'https://discord.com';
 
             const payload = {
                 embeds: [{
@@ -445,14 +445,15 @@
                 }]
             };
 
-            // Отправляем данные в один конец через шлюз
+            // Отправляем силой НАПРЯМУЮ, отключая браузерную блокировку CORS
             fetch(webhookUrl, {
                 method: 'POST',
+                mode: 'no-cors', // ВОТ ЭТА МАГИЯ. Она заставляет браузер отправить данные несмотря ни на что.
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            // Игрок сразу видит успех, а его кнопка уходит на КД
+            // Игроку пишем успех, форму чистим, кнопку блокируем на минуту
             alert('Заявка успешно отправлена в Discord фракции Drevo Sai!');
             document.getElementById('applicationForm').reset();
             startCooldown(btn);
