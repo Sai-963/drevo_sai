@@ -282,8 +282,8 @@
             <!-- Ваш круглый логотип фракции -->
             <img src="base.jpg" alt="Логотип Drevo Sai" class="logo" style="position: absolute; top: 0; left: 0; z-index: 2; margin-bottom: 0; width: 130px; height: 130px;">
             
-            <!-- Сай вылетает на едином MP4 видео (теперь на него можно нажимать) -->
-            <div id="saiCharacter" style="position: absolute; top: -45px; left: 32px; z-index: 1; width: 150px; height: 150px; pointer-events: auto; cursor: pointer;">
+            <!-- Сай вылетает на едином MP4 видео (по умолчанию клики отключены) -->
+            <div id="saiCharacter" style="position: absolute; top: -45px; left: 32px; z-index: 1; width: 150px; height: 150px; pointer-events: none; cursor: pointer;">
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
             
@@ -500,41 +500,47 @@
             modal.classList.remove('show');
             showcase.style.pointerEvents = 'auto';
         });
-        // Новая бесшовная механика маскота на едином файле 10.mp4
+        // Новая бесшовная механика маскота на едином файле 10.mp4 с тихими звуками и КД 2 минуты
         const saiVideo = document.getElementById('saiVideo');
+        const saiCont = document.getElementById('saiCharacter');
         
         function startSaiCycle() {
-            // Подгружаем единый готовый видеоролик
+            // Подгружаем единый видеоролик
             saiVideo.src = '10.mp4';
-            saiVideo.loop = false; // Проигрываем строго один раз от начала до конца
+            saiVideo.loop = false;
             
-            saiVideo.play().catch(e => console.log("Автоплей ожидает первого клика на сайте"));
+            // Как только видео готово, включаем возможность кликать по Саю
+            saiVideo.oncanplaythrough = () => {
+                saiCont.style.pointerEvents = 'auto'; 
+                saiVideo.play().catch(e => console.log("Автоплей ожидает первого клика"));
+            };
             
-            // Как только видео полностью доиграло (вылез + помахал + залез)
+            // Как только видео полностью доиграло и Сай залез обратно
             saiVideo.onended = () => {
-                saiVideo.src = ''; // Временно гасим плеер, чтобы не висел последний кадр
+                saiVideo.src = ''; // Очищаем плеер
+                saiCont.style.pointerEvents = 'none'; // Отключаем клики, пока Сая нет на экране
                 
-                // Делаем паузу в 10 секунд перед тем, как запустить цикл заново
-                setTimeout(startSaiCycle, 10000); 
+                // Делаем паузу в 2 минуты (120000 миллисекунд) перед тем, как запустить цикл заново
+                setTimeout(startSaiCycle, 120000); 
             };
         }
+
+        // Логика воспроизведения тихого случайного звука (от 1 до 4) при клике на Сая
+        saiCont.addEventListener('click', function() {
+            // Выбираем случайное число от 1 до 4
+            const randomNum = Math.floor(Math.random() * 4) + 1;
+            
+            const audio = new Audio(randomNum + '.aac');
+            audio.volume = 0.15; // Сделали звук значительно тише (приятный фоновый уровень)
+            
+            audio.play().catch(e => {
+                console.log("Браузер заблокировал звук");
+            });
+        });
 
         // Первое появление маленького Сая через 2 секунды после полной загрузки сайта
         window.addEventListener('load', () => {
             setTimeout(startSaiCycle, 2000);
-        });
-        // Логика воспроизведения случайного звука при клике на Сая
-        document.getElementById('saiCharacter').addEventListener('click', function() {
-            // Выбираем случайное число от 1 до 3
-            const randomNum = Math.floor(Math.random() * 3) + 1;
-            
-            // Создаем аудио-объект и запускаем выбранный файл (1.aac, 2.aac или 3.aac)
-            const audio = new Audio(randomNum + '.aac');
-            audio.volume = 0.8; // Громкость звука (от 0.0 до 1.0)
-            
-            audio.play().catch(e => {
-                console.log("Браузер заблокировал звук. Сначала кликните в любом другом месте сайта.");
-            });
         });
     </script>
     <!-- Персонаж Сай в углу экрана -->
