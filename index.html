@@ -189,23 +189,61 @@
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             
-            // Считываем значения ДО сброса формы (исправление главного бага)
             const nick = document.getElementById('nickname').value;
             const ds = document.getElementById('discord').value;
             const skills = document.getElementById('skills').value;
             const about = document.getElementById('about').value;
 
-            const formattedText = `🟢 **НОВАЯ ЗАЯВКА В DREVO SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе/Мотивация:** ${about}`;
+            // Настраиваем красивый внешний вид сообщения для Discord (Embed)
+            const webhookData = {
+                username: "Заявки с сайта",
+                avatar_url: "https://imgur.com", // Сюда можно поставить аватарку бота
+                embeds: [{
+                    title: "🟢 НОВАЯ ЗАЯВКА В DREVO SAI",
+                    color: 16733525, // Красный цвет линии (#ff5555 в десятичном формате)
+                    fields: [
+                        { name: "👤 Никнейм в Minecraft", value: nick, inline: true },
+                        { name: "💬 Discord для связи", value: ds, inline: true },
+                        { name: "⚔️ Специализация", value: skills, inline: false },
+                        { name: "📜 О себе / Мотивация", value: about, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
 
-            navigator.clipboard.writeText(formattedText).then(() => {
-                alert('Ваша анкета успешно скопирована! Сейчас откроется Discord — просто вставьте её (Ctrl+V) в канал заявок фракции.');
-                window.open('https://discord.gg', '_blank');
-            }).catch(() => {
-                window.open('https://discord.gg', '_blank');
+            // Ссылка на ваш вебхук
+            const webhookUrl = "https://discord.com/api/webhooks/1560826326259335281/ZQ7WMdhWhL79wKHRnxoy1TjiXnRAV3IjAWoQUq5hM2OKRYj6qaZRCS0q-nJvwKqPEoQm";
+
+            btn.disabled = true;
+            btn.innerText = 'Отправка...';
+
+            // Отправляем данные напрямую в Дискорд
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(webhookData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Ваша заявка успешно отправлена прямо в Discord фракции! Ожидайте ответа.');
+                    document.getElementById('smpForm').reset();
+                    startCooldown(btn);
+                } else {
+                    throw new Error('Ошибка сервера');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при автоматической отправке. Попробуем скопировать в буфер обмена...');
+                
+                // Резервный вариант на случай сбоя сети — копируем в буфер
+                const backupText = `🟢 **НОВАЯ ЗАЯВКА В DREVO SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе:** ${about}`;
+                navigator.clipboard.writeText(backupText).then(() => {
+                    window.open('https://discord.gg', '_blank');
+                });
+                btn.disabled = false;
+                btn.innerText = 'Отправить заявку';
             });
-
-            document.getElementById('smpForm').reset();
-            startCooldown(btn);
         });
 
         function startCooldown(button) {
@@ -225,7 +263,7 @@
         
         function startSaiCycle() {
             if(!saiVideo) return;
-            saiVideo.src = '10.mp4'; saivideo.loop = false;
+            saiVideo.src = '10.mp4'; saiVideo.loop = false;
             
             saiVideo.oncanplaythrough = () => {
                 if(saiCont) saiCont.style.pointerEvents = 'auto'; 
