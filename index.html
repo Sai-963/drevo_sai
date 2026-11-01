@@ -8,29 +8,17 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-image: url('stena.png');
-            background-repeat: repeat;
-            background-attachment: scroll;
-            background-position: center top;
-            background-size: 100% auto; 
-            background-color: #0f0202;
-            color: #e1e1e6;
-            line-height: 1.6;
-            position: relative;
-            min-height: 100vh;
-            overflow-x: hidden;
-            animation: backgroundParallax linear;
-            animation-timeline: scroll();
+            background-image: url('stena.png'); background-repeat: repeat; background-attachment: scroll;
+            background-position: center top; background-size: 100% auto; background-color: #0f0202;
+            color: #e1e1e6; line-height: 1.6; position: relative; min-height: 100vh; overflow-x: hidden;
+            animation: backgroundParallax linear; animation-timeline: scroll();
         }
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 50% 50%, rgba(74, 13, 13, 0.4) 0%, rgba(15, 2, 2, 0.85) 100%);
             z-index: -1; pointer-events: none;
         }
-        @keyframes backgroundParallax {
-            from { background-position: center 0px; }
-            to { background-position: center -150px; }
-        }
+        @keyframes backgroundParallax { from { background-position: center 0px; } to { background-position: center -150px; } }
         header {
             background-color: #000000; padding: 40px 20px; text-align: center;
             border-bottom: 2px solid #ff5555; backdrop-filter: blur(10px);
@@ -96,13 +84,6 @@
             color: #fff; border-radius: 6px; font-size: 1rem; transition: all 0.3s;
         }
         input:focus, textarea:focus { outline: none; border-color: #ff5555; box-shadow: 0 0 10px rgba(255, 85, 85, 0.4); }
-        button {
-            background: #ff5555; color: #fff; padding: 14px 28px; border: none; border-radius: 6px;
-            font-weight: bold; font-size: 1.1rem; cursor: pointer; width: 100%; text-transform: uppercase;
-            letter-spacing: 1px; transition: all 0.2s; box-shadow: 0 4px 15px rgba(255, 85, 85, 0.3);
-        }
-        button:hover { background: #ff6e6e; box-shadow: 0 0 20px rgba(255, 85, 85, 0.6); }
-        button:active { transform: scale(0.98); }
         .modal {
             display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); justify-content: center; align-items: center;
@@ -114,6 +95,9 @@
             box-shadow: 0 0 30px rgba(255, 85, 85, 0.5); transform: scale(0.7); transition: transform 0.3s ease;
         }
         .modal.show .modal-content { transform: scale(1); }
+        #statusMessage { font-weight: bold; text-align: center; margin-top: 15px; }
+        #statusMessage.success { color: #50fa7b; }
+        #statusMessage.error { color: #ff5555; }
     </style>
 </head>
 <body>
@@ -124,7 +108,7 @@
                 <video id="saiVideo" muted playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000000;"></video>
             </div>
         </div>
-        <h1>DREVO SAI</h1>
+        <h1>ДРЕВО SAI</h1>
         <p>Разные судьбы у наших ветвей, но вместе у ствола мы только сильней.</p>
     </header>
     <div class="container">
@@ -168,6 +152,7 @@
                 </div>
             </div>
         </div>
+
         <div class="section">
             <h2>📝 Подать заявку в Drevo Sai</h2>
             <form id="smpForm">
@@ -176,7 +161,7 @@
                     <input type="text" id="nickname" required placeholder="Например, Player123">
                 </div>
                 <div class="form-group">
-                    <label for="discord">Ваш Discord для связи:</label>
+                    <label_for="discord">Ваш Discord для связи:</label>
                     <input type="text" id="discord" required placeholder="Ваш никнейм или тег">
                 </div>
                 <div class="form-group">
@@ -189,6 +174,7 @@
                 </div>
                 <button type="submit" id="submitBtn">Отправить заявку</button>
             </form>
+            <p id="statusMessage"></p>
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 85, 85, 0.1);">
                 <p style="color: #ffb86c; font-size: 0.9rem; margin-bottom: 10px;">Или присоединяйтесь к нашему серверу напрямую:</p>
                 <a href="https://discord.gg" target="_blank" style="text-decoration: none;">
@@ -197,44 +183,60 @@
             </div>
         </div>
     </div>
-
     <div id="imageModal" class="modal">
         <img class="modal-content" id="modalImg">
     </div>
 
     <script>
-        document.getElementById('smpForm').addEventListener('submit', function(e) {
+        document.getElementById('smpForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const nick = document.getElementById('nickname').value;
-            const ds = document.getElementById('discord').value;
+            const statusMessage = document.getElementById('statusMessage');
+            
+            const nickname = document.getElementById('nickname').value;
+            const discordTag = document.getElementById('discord').value;
             const skills = document.getElementById('skills').value;
             const about = document.getElementById('about').value;
 
-            const formattedText = `🟢 **НОВАЯ ЗАЯВКА В DREVO SAI**\n\n**Никнейм:** ${nick}\n**Discord:** ${ds}\n**Специализация:** ${skills}\n**О себе/Мотивация:** ${about}`;
+            // Ссылка на рабочий вебхук от МайнШах (проверенный по CORS)
+            const webhookUrl = "https://discord.com";
 
-            navigator.clipboard.writeText(formattedText).then(() => {
-                alert('Ваша анкета скопирована! Сейчас откроется Discord — просто вставьте её (Ctrl+V) в канал заявок.');
-                window.open('https://discord.gg', '_blank');
-            }).catch(() => {
-                window.open('https://discord.gg', '_blank');
-            });
+            const discordMessage = {
+                embeds: [{
+                    title: "📢 Новая заявка в DREVO SAI!",
+                    color: 16721493,
+                    fields: [
+                        { name: "Игровой ник", value: nickname, inline: true },
+                        { name: "Discord для связи", value: discordTag, inline: true },
+                        { name: "Специализация", value: skills },
+                        { name: "О себе / Мотивация", value: about }
+                    ],
+                    timestamp: new Date()
+                }]
+            };
 
-            document.getElementById('smpForm').reset();
-            startCooldown(btn);
-        });
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(discordMessage)
+                });
 
-        function startCooldown(button) {
-            let timeLeft = 60;
-            button.disabled = true; button.style.background = '#444'; button.style.cursor = 'not-allowed'; button.style.boxShadow = 'none';
-            const timer = setInterval(() => {
-                timeLeft--; button.innerText = `Повторная отправка через ${timeLeft}с`;
-                if (timeLeft <= 0) {
-                    clearInterval(timer); button.disabled = false; button.innerText = 'Отправить заявку';
-                    button.style.background = '#ff5555'; button.style.cursor = 'pointer'; button.style.boxShadow = '0 4px 15px rgba(255, 85, 85, 0.3)';
+                if (response.ok) {
+                    statusMessage.innerText = "✅ Заявка успешно отправлена!";
+                    statusMessage.className = "success";
+                    document.getElementById('smpForm').reset();
+                    setTimeout(() => {
+                        window.location.href = "https://discord.gg";
+                    }, 2000);
+                } else {
+                    throw new Error();
                 }
-            }, 1000);
-        }
+            } catch (error) {
+                statusMessage.innerText = "❌ Ошибка отправки.";
+                statusMessage.className = "error";
+            }
+        });
 
         const saiVideo = document.getElementById('saiVideo');
         const saiCont = document.getElementById('saiCharacter');
