@@ -286,23 +286,23 @@
             };
         }
 
-        if(saiCont) {
-            saiCont.addEventListener('click', function() {
-                // 1. Твой оригинальный звук
+        // Находим круглый логотип
+        const logoImg = document.querySelector('.logo');
+
+        if(logoImg) {
+            logoImg.addEventListener('click', function() {
+                // 1. Твой оригинальный звук (работает при клике на лого)
                 const randomNum = Math.floor(Math.random() * 4) + 1;
                 const audio = new Audio(randomNum + '.aac'); audio.volume = 0.15; 
                 audio.play().catch(e => console.log("Звук заблокирован"));
 
-                // 2. Вспышка на саму круглую аватарку
-                const logoImg = document.querySelector('.logo');
-                if (logoImg) {
-                    logoImg.classList.add('flash-active'); // Включаем красное свечение
-                    
-                    // Через 150 миллисекунд плавно выключаем
-                    setTimeout(() => {
-                        logoImg.classList.remove('flash-active');
-                    }, 150);
-                }
+                // 2. Вспышка срабатывает строго на круглую аватарку
+                logoImg.classList.add('flash-active');
+                
+                // Через 150 миллисекунд плавно выключаем свечение
+                setTimeout(() => {
+                    logoImg.classList.remove('flash-active');
+                }, 150);
             });
         }
 
